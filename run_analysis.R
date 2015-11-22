@@ -1,11 +1,18 @@
+# Script for getting and cleaning data for the Assigment of Get and Cleaning Data Course on COursera
+
+# A full description of the project could be found at the following link:
+# http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+# The URL for the data set came from the course page
 url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 
+# The pathway was adapted to my computer. Adjust as needed.
 
 setwd("F:/vindo Apple/GCD/project")
 
-# Loading needed packages
+# Loading needed package
 
-library(dplyr)
+require(dplyr)
 
 # Getting file
 
@@ -31,8 +38,6 @@ features <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/features.txt"
      
 x_train <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/train/X_train.txt", 
                       header = FALSE)
-#     names(x_train) <- features$features
-
      
 y_train <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/train/y_train.txt", 
                       header = FALSE)
@@ -46,8 +51,7 @@ subject_train <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/train/su
      
 x_test <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/test/X_test.txt", 
                       header = FALSE)
-#     names(x_test) <- features$features
-     
+
 y_test <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/test/y_test.txt", 
                       header = FALSE)
      rename(y_test, CodeActivity = V1) -> y_test
@@ -62,12 +66,12 @@ subject_test <- read.table("F:/vindo Apple/GCD/project/UCI HAR Dataset/test/subj
 test <- bind_cols(subject_test,y_test,x_test)
 train <- bind_cols(subject_train,y_train,x_train)
 
-# 1 Merging  the training and the test sets to create one data set.
+# 1a Merging  the training and the test sets to create one data set.
 
 testtrainfull <- union(test, train)
 
 # Creating an index for selecting variables with mean or standard deviation. The 3 variables
-# (subject, nlabel and label) from the other datsets were also included.
+# (Subject, CodeActivity and Activity) from the other datsets were also included.
 
 featureindex <-c(TRUE, TRUE, TRUE, grepl("[mM]ean|[sS][tT][dD]", features$features))
 
@@ -111,11 +115,14 @@ variableNames <- c(names(testtrainfull)[1:3],features$features)
 names(testtrainfull) <- variableNames
 
 
+# 1b The Merged data set testtrainfull now has descriptive varible names.
+
+
 # 2 Extracting only the measurements on the mean and standard deviation for each measurement. 
 
 testtrain <- testtrainfull[featureindex]
 
-# From the data set in step 4, creates a second, independent tidy data set 
+# From the data set in step 4, a second, independent tidy data set was created
 # with the average of each variable for each activity and each subject.
 
 testtrain %>% 
@@ -123,3 +130,9 @@ testtrain %>%
      select(-Subject, -CodeActivity, -Activity) %>% 
      group_by(SubjectActivity) %>% 
      summarize_each(funs(mean)) -> SubjectActivity
+
+# Saving the tidy data set created.
+
+write.table(SubjectActivity, file = "SubjectActivity.txt", row.name=FALSE)
+
+#end of the script
