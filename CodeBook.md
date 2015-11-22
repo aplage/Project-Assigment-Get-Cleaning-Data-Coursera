@@ -29,33 +29,14 @@ An index was created for selecting variables with mean or standard deviation. Th
 
 Then, descriptive activity names were creted to name the activities in the data set. Their meanings are shown in the Varibles and Description section.
 
-Appropriately labelling of the data set with descriptive variable names
+Appropriately labelling of the data set with descriptive variable names was done. The Merged data set testtrainfull now has descriptive varible names.
 
-variableNames <- c(names(testtrainfull)[1:3],features$features)
-names(testtrainfull) <- variableNames
+Only the measurements on the mean and standard deviation for each measurement were, then extracted. 
 
+From the data set previously prepared, a second, independent tidy data set was created with the average of each variable for each activity and each subject, the SubjectActivity data set.
 
-# 1b The Merged data set testtrainfull now has descriptive varible names.
+Tthe created tidy data set was saved to "SubjectActivity.txt".
 
-
-# 2 Extracting only the measurements on the mean and standard deviation for each measurement. 
-
-testtrain <- testtrainfull[featureindex]
-
-# From the data set in step 4, a second, independent tidy data set was created
-# with the average of each variable for each activity and each subject.
-
-testtrain %>% 
-     mutate(SubjectActivity = interaction(Subject, Activity, drop = TRUE)) %>%
-     select(-Subject, -CodeActivity, -Activity) %>% 
-     group_by(SubjectActivity) %>% 
-     summarize_each(funs(mean)) -> SubjectActivity
-
-# Saving the tidy data set created.
-
-write.table(SubjectActivity, file = "SubjectActivity.txt", row.name=FALSE)
-
-#end of the script
 
 ## Variables and Description
 
@@ -624,14 +605,3 @@ Variable"	"Description"
 "AngleVectors_X_GravityMean"	  Angle between to vectors   - X -  Gravity Mean value 
 "AngleVectors_Y_GravityMean"	  Angle between to vectors   - Y -  Gravity Mean value 
 "AngleVectors_Z_GravityMean"	  Angle between to vectors   - Z -  Gravity Mean value 
-
-
-For almost any data set, the measurements you calculate will need to be described in more detail than you will sneak into the spreadsheet. The code book contains this information. At minimum it should contain:
-
-    Information about the variables (including units!) in the data set not contained in the tidy data
-    Information about the summary choices you made
-    Information about the experimental study design you used
-
-In our genomics example, the analyst would want to know what the unit of measurement for each clinical/demographic variable is (age in years, treatment by name/dose, level of diagnosis and how heterogeneous). They would also want to know how you picked the exons you used for summarizing the genomic data (UCSC/Ensembl, etc.). They would also want to know any other information about how you did the data collection/study design. For example, are these the first 20 patients that walked into the clinic? Are they 20 highly selected patients by some characteristic like age? Are they randomized to treatments?
-
-A common format for this document is a Word file. There should be a section called "Study design" that has a thorough description of how you collected the data. There is a section called "Code book" that describes each variable and its units. 
